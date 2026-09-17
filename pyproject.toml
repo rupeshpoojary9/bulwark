@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bulwark-guardrails"
+version = "0.1.0"
+description = "A local-first LLM guardrails toolkit: layered input/output validators plus an eval harness."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Rupesh Poojary" }]
+keywords = ["llm", "guardrails", "prompt-injection", "pii", "safety", "eval"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = []
+
+[project.optional-dependencies]
+schema = ["jsonschema>=4.0"]
+dev = ["pytest>=7", "jsonschema>=4.0"]
+
+[tool.setuptools.packages.find]
+include = ["bulwark*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
