@@ -22,6 +22,21 @@ LOG="$REPO/.daily/$(date +%F).log"
 exec >>"$LOG" 2>&1
 echo "===== $(date '+%Y-%m-%d %H:%M:%S') daily contributor ====="
 
+notify() {  # desktop nudge so you remember to review/push (best-effort)
+  /usr/bin/osascript -e "display notification \"$2\" with title \"$1\" sound name \"Glass\"" 2>/dev/null
+}
+
+# Count remaining unchecked items in the two sections the agent works from.
+remaining_items() {
+  awk '
+    /^## Tests & coverage/{f=1; next}
+    /^## Docs & examples/{f=1; next}
+    /^## /{f=0}
+    f && /^- \[ \]/{c++}
+    END{print c+0}
+  ' "$REPO/ROADMAP.md"
+}
+
 # Refuse to run on a dirty tree so we never mix manual + agent changes.
 if [[ -n "$(git status --porcelain)" ]]; then
   echo "ABORT: working tree not clean; skipping today."; exit 0
@@ -29,6 +44,15 @@ fi
 
 # Keep local main current (no network write; pull only).
 git pull --rebase --quiet 2>/dev/null || echo "warn: git pull skipped/failed"
+
+# Completion signal: backlog exhausted -> stop cleanly and tell the human.
+LEFT="$(remaining_items)"
+echo "roadmap items left (tests+docs): $LEFT"
+if [[ "$LEFT" -eq 0 ]]; then
+  echo "PROJECT BACKLOG COMPLETE — all tests/docs items done. Nothing to do."
+  notify "bulwark ✅ backlog complete" "All ROADMAP tests/docs items are done. Add items or ship v1."
+  exit 0
+fi
 
 rm -f "$REPO/scripts/.commitmsg"
 
@@ -59,3 +83,4 @@ git commit --quiet -m "$MSG" -m "Automated daily increment (tests/docs). Reviewe
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 echo "COMMITTED (local, unpushed): $MSG"
 echo "Review:  git -C $REPO show   |   Push:  git -C $REPO push"
+notify "bulwark — new commit to review" "$MSG  ($(remaining_items) items left). Review & push."
