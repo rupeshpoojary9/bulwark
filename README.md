@@ -1,5 +1,8 @@
 # bulwark
 
+[![tests](https://github.com/rupeshpoojary9/bulwark/actions/workflows/tests.yml/badge.svg)](https://github.com/rupeshpoojary9/bulwark/actions/workflows/tests.yml) ![python](https://img.shields.io/badge/python-3.10%2B-blue) ![license](https://img.shields.io/badge/license-MIT-green)
+
+
 **A local-first LLM guardrails toolkit.** Wrap any LLM call in a layered defense,
 then *measure* how well each guardrail works against a labeled dataset.
 
