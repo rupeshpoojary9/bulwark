@@ -8,3 +8,7 @@ dist/
 .coverage
 htmlcov/
 .DS_Store
+
+# daily contributor scratch
+scripts/.commitmsg
+.daily/
