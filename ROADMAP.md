@@ -6,7 +6,7 @@ same commit. Keep each item small enough to finish in one sitting. Only real,
 tested work lands — never an empty commit.
 
 ## Tests & coverage
-- [ ] Add edge-case tests for `PIIValidator` phone formats (intl, extensions, false positives like ISBNs).
+- [x] Add edge-case tests for `PIIValidator` phone formats (intl, extensions, false positives like ISBNs).
 - [ ] Add tests for `_apply_redactions` with adjacent and nested spans.
 - [ ] Add tests for `SecretsValidator` Slack + Google + private-key patterns.
 - [ ] Add a test that `GuardResult.by_validator` filters correctly across a 3-validator pipeline.

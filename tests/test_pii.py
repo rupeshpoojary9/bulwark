@@ -44,3 +44,46 @@ def test_clean_text_passes_untouched():
     r = Guard([PIIValidator()]).check("nothing sensitive here")
     assert r.text == "nothing sensitive here"
     assert not r.redacted and r.passed
+
+
+# --- phone-format edge cases -------------------------------------------------
+
+def test_intl_phone_with_country_code_redacted():
+    # "+1 " country-code prefix is part of the matched span.
+    r = Guard([PIIValidator()]).check("call +1 415-555-2671 now")
+    assert r.text == "call [REDACTED_PHONE] now"
+    assert r.by_validator("pii")[0].meta["kind"] == "phone"
+
+
+def test_intl_phone_two_digit_country_code():
+    # Country code may be two digits (regex allows \d{1,2}).
+    r = Guard([PIIValidator()]).check("ring +44 415-555-2671")
+    assert "+44 415-555-2671" not in r.text
+    assert "[REDACTED_PHONE]" in r.text
+
+
+def test_phone_dotted_separators_redacted():
+    r = Guard([PIIValidator()]).check("fax 415.555.2671 today")
+    assert r.text == "fax [REDACTED_PHONE] today"
+
+
+def test_phone_parenthesized_area_code_redacted():
+    # The parentheses around the area code are included in the redacted span.
+    r = Guard([PIIValidator()]).check("dial (415) 555-2671 please")
+    assert r.text == "dial [REDACTED_PHONE] please"
+
+
+def test_phone_extension_base_redacted_but_extension_text_kept():
+    # The regex matches only the base number; the trailing extension stays.
+    r = Guard([PIIValidator()]).check("Call 415-555-2671 ext. 89")
+    assert r.text == "Call [REDACTED_PHONE] ext. 89"
+    kinds = [f.meta.get("kind") for f in r.by_validator("pii")]
+    assert kinds == ["phone"]
+
+
+def test_isbn_not_flagged_as_phone_or_card():
+    # ISBN-13 "978-3-16-148410-0": wrong shape for a phone, and its digit run
+    # fails the Luhn check, so it must not be flagged as PII at all.
+    r = Guard([PIIValidator()]).check("see ISBN 978-3-16-148410-0 for details")
+    assert r.findings == []
+    assert not r.redacted and r.passed
