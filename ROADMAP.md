@@ -27,7 +27,7 @@ tested work lands — never an empty commit.
 - [ ] Add a `tests/conftest.py` with shared fixtures (sample guards) and refactor a couple of tests to use them.
 
 ## New validators
-- [ ] `ToxicityValidator` — keyword/lexicon baseline with a labeled dataset + eval.
+- [x] `ToxicityValidator` — keyword/lexicon baseline with a labeled dataset + eval.
 - [ ] `TopicValidator` — allow/deny topic lists (e.g. block medical/legal advice).
 - [ ] `LengthValidator` — min/max token or char bounds on output.
 - [ ] `LanguageValidator` — flag output not in an expected language.

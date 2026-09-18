@@ -11,6 +11,7 @@ from .validators import (
     JSONSchemaValidator,
     PIIValidator,
     SecretsValidator,
+    ToxicityValidator,
     Validator,
 )
 
@@ -27,4 +28,5 @@ __all__ = [
     "InjectionValidator",
     "SecretsValidator",
     "JSONSchemaValidator",
+    "ToxicityValidator",
 ]
