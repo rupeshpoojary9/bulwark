@@ -33,6 +33,7 @@ teams reach for first:
 | `InjectionValidator` | prompt-injection / jailbreak attempts | block |
 | `SecretsValidator` | leaked API keys & tokens (AWS, OpenAI, GitHub, …) | block |
 | `JSONSchemaValidator` | malformed / off-schema structured output | block |
+| `ToxicityValidator` | abusive language (threats, insults, profanity) via a curated lexicon | block |
 
 Guardrails are only as good as their measured error rate, so bulwark ships an
 **eval harness** rather than asking you to trust the rules.
