@@ -28,6 +28,59 @@ def test_no_secret_passes():
     assert Guard([SecretsValidator()]).check("just a normal sentence").passed
 
 
+@pytest.mark.parametrize("text,kind", [
+    ("slack token xoxb-" + "1" * 12 + " leaked", "slack_token"),
+    ("slack token xoxp-" + "a" * 12 + " leaked", "slack_token"),
+    ("slack bot xoxb-2345678901-2345678901-abcdefghij here", "slack_token"),
+    ("google key AIza" + "B" * 35 + " oops", "google_api_key"),
+    ("google key AIzaSy" + "c" * 33 + " oops", "google_api_key"),
+])
+def test_slack_and_google_secrets_blocked(text, kind):
+    r = Guard([SecretsValidator()]).check(text)
+    assert r.blocked
+    assert r.findings[0].meta["kind"] == kind
+
+
+@pytest.mark.parametrize("header", [
+    "-----BEGIN PRIVATE KEY-----",
+    "-----BEGIN RSA PRIVATE KEY-----",
+    "-----BEGIN EC PRIVATE KEY-----",
+    "-----BEGIN OPENSSH PRIVATE KEY-----",
+])
+def test_private_key_pem_blocked(header):
+    pem = f"{header}\nMIIEvQIBADANBgkqh\n-----END PRIVATE KEY-----"
+    r = Guard([SecretsValidator()]).check(pem)
+    assert r.blocked
+    assert r.findings[0].meta["kind"] == "private_key"
+
+
+def test_slack_and_google_redact_mode():
+    text = "cfg xoxb-" + "1" * 12 + " and AIza" + "B" * 35
+    r = Guard([SecretsValidator(block=False)]).check(text)
+    assert r.passed
+    assert "[REDACTED_SLACK_TOKEN]" in r.text
+    assert "[REDACTED_GOOGLE_API_KEY]" in r.text
+
+
+def test_private_key_redact_mode():
+    pem = "-----BEGIN RSA PRIVATE KEY-----\nabc\n-----END RSA PRIVATE KEY-----"
+    r = Guard([SecretsValidator(block=False)]).check(pem)
+    assert r.passed
+    assert "[REDACTED_PRIVATE_KEY]" in r.text
+    # only the BEGIN header is matched/masked; the body is left intact
+    assert "abc" in r.text
+
+
+def test_short_slack_prefix_is_not_a_false_positive():
+    # too few trailing chars to satisfy the {10,} quantifier
+    assert Guard([SecretsValidator()]).check("say xoxb-12 to me").passed
+
+
+def test_plain_google_word_is_not_a_false_positive():
+    # "AIza" alone (no 35-char key body) must not match
+    assert Guard([SecretsValidator()]).check("the AIza project update").passed
+
+
 def test_schema_rejects_non_json():
     r = Guard([JSONSchemaValidator()]).check("not json at all")
     assert r.blocked
