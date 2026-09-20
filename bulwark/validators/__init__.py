@@ -4,6 +4,7 @@ from .injection import InjectionValidator
 from .pii import PIIValidator
 from .schema import JSONSchemaValidator
 from .secrets import SecretsValidator
+from .toxicity import ToxicityValidator
 
 __all__ = [
     "Validator",
@@ -11,4 +12,5 @@ __all__ = [
     "InjectionValidator",
     "SecretsValidator",
     "JSONSchemaValidator",
+    "ToxicityValidator",
 ]
