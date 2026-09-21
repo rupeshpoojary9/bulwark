@@ -11,7 +11,7 @@ tested work lands — never an empty commit.
 - [x] Add tests for `SecretsValidator` Slack + Google + private-key (PEM) patterns.
 - [x] Add a test that `GuardResult.by_validator` filters correctly across a 3-validator pipeline, and returns `[]` for an unknown validator name.
 - [x] Add direct unit tests for the `_luhn_ok` helper (known valid + invalid card numbers).
-- [ ] Add tests asserting clean text is returned unchanged and `passed` is True for every validator (empty string, whitespace, plain prose).
+- [x] Add tests asserting clean text is returned unchanged and `passed` is True for every validator (empty string, whitespace, plain prose).
 - [ ] Add tests for `GuardResult` properties (`passed`, `blocked`, `redacted`, `__bool__`) across allow/redact/block combinations.
 - [ ] Add tests for `Finding` dataclass defaults (severity MEDIUM, empty meta) and `Action`/`Severity` string-enum equality.
 - [ ] Add a parametrized test that every `InjectionValidator` pattern label fires on a representative example.
