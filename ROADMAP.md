@@ -15,7 +15,7 @@ tested work lands — never an empty commit.
 - [x] Add tests for `GuardResult` properties (`passed`, `blocked`, `redacted`, `__bool__`) across allow/redact/block combinations.
 - [x] Add tests for `Finding` dataclass defaults (severity MEDIUM, empty meta) and `Action`/`Severity` string-enum equality.
 - [x] Add a parametrized test that every `InjectionValidator` pattern label fires on a representative example.
-- [ ] Add tests that `InjectionValidator` matching is case-insensitive.
+- [x] Add tests that `InjectionValidator` matching is case-insensitive.
 - [ ] Add tests for `SecretsValidator` with multiple secrets in one string (all reported).
 - [ ] Add tests for `JSONSchemaValidator` with nested schemas (arrays + nested required fields).
 - [ ] Add a test for `JSONSchemaValidator` where valid JSON has the wrong top-level type (array vs object).
