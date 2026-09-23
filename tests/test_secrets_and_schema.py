@@ -159,6 +159,16 @@ def test_schema_flags_wrong_array_item_type():
     assert bad.findings[0].meta["path"] == ["tags", 1]
 
 
+def test_schema_flags_wrong_top_level_type():
+    # Well-formed JSON, but an array where the schema demands an object.
+    schema = {"type": "object", "properties": {"ok": {"type": "boolean"}}}
+    r = Guard([JSONSchemaValidator(schema)]).check('[1, 2, 3]')
+    assert r.blocked
+    assert r.findings[0].meta["error"] == "schema_mismatch"
+    # top-level mismatch -> empty path
+    assert r.findings[0].meta["path"] == []
+
+
 def test_schema_enforces_shape():
     schema = {
         "type": "object",
