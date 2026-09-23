@@ -81,6 +81,36 @@ def test_plain_google_word_is_not_a_false_positive():
     assert Guard([SecretsValidator()]).check("the AIza project update").passed
 
 
+def test_multiple_secrets_all_reported():
+    # Three distinct credential types in one blob -> one finding each, no misses.
+    text = (
+        "aws AKIAIOSFODNN7EXAMPLE "
+        "gh ghp_" + "a" * 36 + " "
+        "openai sk-" + "b" * 32
+    )
+    r = Guard([SecretsValidator()]).check(text)
+    assert r.blocked
+    kinds = sorted(f.meta["kind"] for f in r.findings)
+    assert kinds == ["aws_access_key_id", "github_token", "openai_api_key"]
+
+
+def test_multiple_secrets_same_kind_all_reported():
+    # Two AWS keys -> two separate findings with distinct spans.
+    text = "first AKIAIOSFODNN7EXAMPLE then AKIA1234567890ABCDEF end"
+    r = Guard([SecretsValidator()]).check(text)
+    aws = [f for f in r.findings if f.meta["kind"] == "aws_access_key_id"]
+    assert len(aws) == 2
+    assert aws[0].span != aws[1].span
+
+
+def test_multiple_secrets_all_redacted():
+    text = "AKIAIOSFODNN7EXAMPLE and sk-" + "b" * 32
+    r = Guard([SecretsValidator(block=False)]).check(text)
+    assert r.passed
+    assert "[REDACTED_AWS_ACCESS_KEY_ID]" in r.text
+    assert "[REDACTED_OPENAI_API_KEY]" in r.text
+
+
 def test_schema_rejects_non_json():
     r = Guard([JSONSchemaValidator()]).check("not json at all")
     assert r.blocked
