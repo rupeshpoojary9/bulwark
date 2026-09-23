@@ -81,6 +81,45 @@ def test_phone_extension_base_redacted_but_extension_text_kept():
     assert kinds == ["phone"]
 
 
+# --- adjacent PII, card separators, SSN boundaries, IP severity ------------
+
+def test_two_adjacent_pii_items_both_redacted_surroundings_kept():
+    # Email and phone sit right next to each other; both go, prose survives.
+    r = Guard([PIIValidator()]).check("reach a@b.com 415-555-2671 today")
+    assert r.text == "reach [REDACTED_EMAIL] [REDACTED_PHONE] today"
+    assert "a@b.com" not in r.text and "415-555-2671" not in r.text
+    assert len(r.findings) == 2
+
+
+def test_space_separated_credit_card_redacted():
+    r = Guard([PIIValidator()]).check("pay with 4111 1111 1111 1111 now")
+    assert "[REDACTED_CARD]" in r.text
+    assert "4111 1111 1111 1111" not in r.text
+    assert r.by_validator("pii")[0].meta["kind"] == "credit_card"
+
+
+def test_hyphen_separated_credit_card_redacted():
+    r = Guard([PIIValidator()]).check("pay with 4111-1111-1111-1111 now")
+    assert "[REDACTED_CARD]" in r.text
+    assert "4111-1111-1111-1111" not in r.text
+    assert r.by_validator("pii")[0].meta["kind"] == "credit_card"
+
+
+def test_ssn_embedded_in_longer_digit_run_not_matched():
+    # Extra digits on either side break the (?<!\d)...(?!\d) boundaries.
+    for text in ("id 123-45-67890 end", "id 0123-45-6789 end"):
+        r = Guard([PIIValidator()]).check(text)
+        kinds = [f.meta.get("kind") for f in r.by_validator("pii")]
+        assert "ssn" not in kinds, text
+
+
+def test_ipv4_finding_is_low_severity():
+    r = Guard([PIIValidator()]).check("server at 192.168.1.1 responded")
+    f = r.by_validator("pii")[0]
+    assert f.meta["kind"] == "ip_address"
+    assert f.severity.value == "low"
+
+
 def test_isbn_not_flagged_as_phone_or_card():
     # ISBN-13 "978-3-16-148410-0": wrong shape for a phone, and its digit run
     # fails the Luhn check, so it must not be flagged as PII at all.
