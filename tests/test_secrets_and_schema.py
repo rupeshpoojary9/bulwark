@@ -121,6 +121,44 @@ def test_schema_accepts_plain_json_without_schema():
     assert Guard([JSONSchemaValidator()]).check('{"ok": true}').passed
 
 
+_NESTED_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "user": {
+            "type": "object",
+            "properties": {"id": {"type": "integer"}, "name": {"type": "string"}},
+            "required": ["id", "name"],
+        },
+        "tags": {"type": "array", "items": {"type": "string"}},
+    },
+    "required": ["user", "tags"],
+}
+
+
+def test_schema_accepts_valid_nested_document():
+    g = Guard([JSONSchemaValidator(_NESTED_SCHEMA)])
+    doc = '{"user": {"id": 1, "name": "Ada"}, "tags": ["a", "b"]}'
+    assert g.check(doc).passed
+
+
+def test_schema_flags_missing_nested_required_field():
+    g = Guard([JSONSchemaValidator(_NESTED_SCHEMA)])
+    # user.name is required but absent
+    bad = g.check('{"user": {"id": 1}, "tags": ["a"]}')
+    assert bad.blocked
+    assert bad.findings[0].meta["error"] == "schema_mismatch"
+    assert bad.findings[0].meta["path"] == ["user"]
+
+
+def test_schema_flags_wrong_array_item_type():
+    g = Guard([JSONSchemaValidator(_NESTED_SCHEMA)])
+    # tags[1] is an int, not a string -> path points at the offending index
+    bad = g.check('{"user": {"id": 1, "name": "Ada"}, "tags": ["a", 2]}')
+    assert bad.blocked
+    assert bad.findings[0].meta["error"] == "schema_mismatch"
+    assert bad.findings[0].meta["path"] == ["tags", 1]
+
+
 def test_schema_enforces_shape():
     schema = {
         "type": "object",
