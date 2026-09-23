@@ -14,7 +14,7 @@ tested work lands — never an empty commit.
 - [x] Add tests asserting clean text is returned unchanged and `passed` is True for every validator (empty string, whitespace, plain prose).
 - [x] Add tests for `GuardResult` properties (`passed`, `blocked`, `redacted`, `__bool__`) across allow/redact/block combinations.
 - [x] Add tests for `Finding` dataclass defaults (severity MEDIUM, empty meta) and `Action`/`Severity` string-enum equality.
-- [ ] Add a parametrized test that every `InjectionValidator` pattern label fires on a representative example.
+- [x] Add a parametrized test that every `InjectionValidator` pattern label fires on a representative example.
 - [ ] Add tests that `InjectionValidator` matching is case-insensitive.
 - [ ] Add tests for `SecretsValidator` with multiple secrets in one string (all reported).
 - [ ] Add tests for `JSONSchemaValidator` with nested schemas (arrays + nested required fields).
