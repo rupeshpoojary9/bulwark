@@ -19,10 +19,10 @@ tested work lands — never an empty commit.
 - [x] Add tests for `SecretsValidator` with multiple secrets in one string (all reported).
 - [x] Add tests for `JSONSchemaValidator` with nested schemas (arrays + nested required fields).
 - [x] Add a test for `JSONSchemaValidator` where valid JSON has the wrong top-level type (array vs object).
-- [ ] Add tests for `PIIValidator` with two adjacent PII items, asserting both redacted and surrounding text preserved.
-- [ ] Add tests distinguishing space- vs hyphen-separated credit cards (both redacted).
-- [ ] Add tests that an SSN embedded in a longer digit run is NOT matched.
-- [ ] Add tests that IPv4 findings carry LOW severity and `kind == "ip_address"`.
+- [x] Add tests for `PIIValidator` with two adjacent PII items, asserting both redacted and surrounding text preserved.
+- [x] Add tests distinguishing space- vs hyphen-separated credit cards (both redacted).
+- [x] Add tests that an SSN embedded in a longer digit run is NOT matched.
+- [x] Add tests that IPv4 findings carry LOW severity and `kind == "ip_address"`.
 - [ ] Add tests for `Guard()` with no validators (passes, text unchanged) and `Guard.add` returning self for chaining.
 - [ ] Add a `tests/conftest.py` with shared fixtures (sample guards) and refactor a couple of tests to use them.
 
