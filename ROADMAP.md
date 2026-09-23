@@ -23,7 +23,7 @@ tested work lands — never an empty commit.
 - [x] Add tests distinguishing space- vs hyphen-separated credit cards (both redacted).
 - [x] Add tests that an SSN embedded in a longer digit run is NOT matched.
 - [x] Add tests that IPv4 findings carry LOW severity and `kind == "ip_address"`.
-- [ ] Add tests for `Guard()` with no validators (passes, text unchanged) and `Guard.add` returning self for chaining.
+- [x] Add tests for `Guard()` with no validators (passes, text unchanged) and `Guard.add` returning self for chaining.
 - [ ] Add a `tests/conftest.py` with shared fixtures (sample guards) and refactor a couple of tests to use them.
 
 ## New validators
