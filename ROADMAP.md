@@ -40,7 +40,7 @@ tested work lands — never an empty commit.
 - [ ] Reduce injection false-positive rate below 0.05 without dropping recall.
 
 ## Docs & examples
-- [ ] `examples/fastapi_middleware.py` — guard requests/responses in a web app.
+- [x] `examples/fastapi_middleware.py` — guard requests/responses in a web app.
 - [ ] `examples/streaming.py` — apply output guards to streamed tokens.
 - [ ] `examples/custom_validator.py` — subclass `Validator` to add a project-specific rule.
 - [ ] `examples/batch_scan.py` — scan a list of texts and print a per-validator summary.
