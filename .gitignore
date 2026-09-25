@@ -9,6 +9,6 @@ dist/
 htmlcov/
 .DS_Store
 
-# daily contributor scratch
-scripts/.commitmsg
+# internal automation, not for the public repo
+scripts/
 .daily/

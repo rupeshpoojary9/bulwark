@@ -1,9 +1,9 @@
 # Roadmap / backlog
 
-The daily contributor works through this list top-down: pick the first unchecked
-item, implement it with tests (and docs where relevant), and check it off in the
-same commit. Keep each item small enough to finish in one sitting. Only real,
-tested work lands — never an empty commit.
+Working through this list top-down: pick the first unchecked item, implement it
+with tests (and docs where relevant), and check it off in the same commit. Keep
+each item small enough to finish in one sitting. Only real, tested work lands,
+never an empty commit.
 
 ## Tests & coverage
 - [x] Add edge-case tests for `PIIValidator` phone formats (intl, extensions, false positives like ISBNs).
