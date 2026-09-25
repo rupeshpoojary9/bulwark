@@ -42,7 +42,7 @@ never an empty commit.
 ## Docs & examples
 - [x] `examples/fastapi_middleware.py` — guard requests/responses in a web app.
 - [x] `examples/streaming.py` — apply output guards to streamed tokens.
-- [ ] `examples/custom_validator.py` — subclass `Validator` to add a project-specific rule.
+- [x] `examples/custom_validator.py` — subclass `Validator` to add a project-specific rule.
 - [ ] `examples/batch_scan.py` — scan a list of texts and print a per-validator summary.
 - [ ] `examples/cli_scan.py` — read text from stdin, print findings as JSON.
 - [ ] Docstring pass: ensure every public class/method has a usage example.
