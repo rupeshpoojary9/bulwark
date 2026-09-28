@@ -44,7 +44,7 @@ never an empty commit.
 - [x] `examples/streaming.py` — apply output guards to streamed tokens.
 - [x] `examples/custom_validator.py` — subclass `Validator` to add a project-specific rule.
 - [x] `examples/batch_scan.py` — scan a list of texts and print a per-validator summary.
-- [ ] `examples/cli_scan.py` — read text from stdin, print findings as JSON.
+- [x] `examples/cli_scan.py` — read text from stdin, print findings as JSON.
 - [ ] Docstring pass: ensure every public class/method has a usage example.
 - [ ] `CONTRIBUTING.md` and a short architecture diagram (ASCII) in the README.
 - [ ] `CHANGELOG.md` starting at v0.1.0 (Keep a Changelog format).
