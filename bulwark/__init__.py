@@ -1,4 +1,4 @@
-"""bulwark — a local-first LLM guardrails toolkit.
+"""bulwark, a local-first LLM guardrails toolkit.
 
 Wrap any LLM call with a layered defense (PII redaction, prompt-injection
 detection, secret-leak detection, structured-output validation) and measure
