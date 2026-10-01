@@ -15,6 +15,15 @@ _SSN = re.compile(r"(?<!\d)\d{3}-\d{2}-\d{4}(?!\d)")
 _IPV4 = re.compile(r"(?<!\d)(?:\d{1,3}\.){3}\d{1,3}(?!\d)")
 # 13-19 digit runs, optionally split by spaces/hyphens (candidate card numbers).
 _CARD = re.compile(r"(?<!\d)(?:\d[ -]?){13,19}(?!\d)")
+# 2-letter country + 2-digit check + 11-30 alphanumeric, the ISO 13616 shape.
+# Actual length is country-specific; the mod-97 check below is the real
+# filter, this regex only needs to be loose enough to catch candidates.
+_IBAN = re.compile(r"\b[A-Z]{2}\d{2}(?:[ ]?[A-Z0-9]{4}){2,7}[ ]?[A-Z0-9]{0,3}\b")
+# Deliberately conservative, common formats only: 1-2 letters + 6-7 digits
+# (e.g. India, UK), 9 digits, or 1 letter + 8 digits (e.g. US). Can't cover
+# every country's format, and some plain alphanumeric codes will still match
+# by coincidence, hence the LOW severity rather than HIGH.
+_PASSPORT = re.compile(r"(?<![A-Za-z0-9])(?:[A-Z]{1,2}\d{6,7}|\d{9}|[A-Z]\d{8})(?![A-Za-z0-9])")
 
 
 def _luhn_ok(digits: str) -> bool:
@@ -29,6 +38,20 @@ def _luhn_ok(digits: str) -> bool:
         total += d
         alt = not alt
     return total % 10 == 0
+
+
+def _iban_ok(candidate: str) -> bool:
+    """ISO 7064 mod-97-10 checksum — filters random alphanumeric runs from
+    real IBANs. Country-specific length isn't checked; the checksum is."""
+    s = candidate.replace(" ", "").upper()
+    if not (15 <= len(s) <= 34):
+        return False
+    rearranged = s[4:] + s[:4]
+    try:
+        digits = "".join(str(int(ch, 36)) for ch in rearranged)
+    except ValueError:
+        return False
+    return int(digits) % 97 == 1
 
 
 class PIIValidator(Validator):
@@ -64,5 +87,11 @@ class PIIValidator(Validator):
         )
         findings += self._find(text, _PHONE, "phone", "[REDACTED_PHONE]")
         findings += self._find(text, _IPV4, "ip_address", "[REDACTED_IP]",
+                               Severity.LOW)
+        findings += self._find(
+            text, _IBAN, "iban", "[REDACTED_IBAN]", Severity.HIGH,
+            validate=_iban_ok,
+        )
+        findings += self._find(text, _PASSPORT, "passport", "[REDACTED_PASSPORT]",
                                Severity.LOW)
         return findings

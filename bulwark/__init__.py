@@ -9,13 +9,15 @@ from .result import Action, Finding, GuardResult, Severity
 from .validators import (
     InjectionValidator,
     JSONSchemaValidator,
+    LengthValidator,
     PIIValidator,
     SecretsValidator,
+    TopicValidator,
     ToxicityValidator,
     Validator,
 )
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 __all__ = [
     "Guard",
@@ -29,4 +31,6 @@ __all__ = [
     "SecretsValidator",
     "JSONSchemaValidator",
     "ToxicityValidator",
+    "LengthValidator",
+    "TopicValidator",
 ]

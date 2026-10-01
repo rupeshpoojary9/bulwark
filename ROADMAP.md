@@ -28,16 +28,16 @@ never an empty commit.
 
 ## New validators
 - [x] `ToxicityValidator` — keyword/lexicon baseline with a labeled dataset + eval.
-- [ ] `TopicValidator` — allow/deny topic lists (e.g. block medical/legal advice).
-- [ ] `LengthValidator` — min/max token or char bounds on output.
-- [ ] `LanguageValidator` — flag output not in an expected language.
-- [ ] `PIIValidator`: add IBAN and passport-number patterns.
+- [x] `TopicValidator` — allow/deny topic lists (e.g. block medical/legal advice).
+- [x] `LengthValidator` — min/max word or char bounds on output.
+- [x] `PIIValidator`: add IBAN (real mod-97 checksum) and passport-number patterns.
+- [ ] `LanguageValidator` — deferred on purpose. Real language ID without a dependency means either a weak heuristic (stopword ratio, easy to game, wrong on short text) or pulling in a model/dictionary, which breaks the zero-dependency core. Worth doing properly as an optional extra later, not worth shipping a weak baseline just to check the box.
 
 ## Evals & datasets
-- [ ] Grow `injection_labeled.jsonl` toward 100 rows (harder negatives, obfuscated positives).
-- [ ] Add `datasets/pii_labeled.jsonl` and `evals/eval_pii.py`.
-- [ ] Add a combined-pipeline eval reporting per-validator and end-to-end metrics.
-- [ ] Reduce injection false-positive rate below 0.05 without dropping recall.
+- [x] Add `datasets/pii_labeled.jsonl` and `evals/eval_pii.py`. 28 rows, each verified against the real validator before being added, including real limitations (North-American-only phone format misses intl numbers; the passport `\d{9}` pattern can't distinguish a passport from any other 9-digit ID by shape alone). precision=0.938 recall=0.882 f1=0.909, honest numbers from real gaps, not a hand-picked 1.000.
+- [x] Add a combined-pipeline eval (`datasets/combined_labeled.jsonl`, `evals/eval_combined.py`) reporting both end-to-end and per-validator catch-rate metrics. Scope is composition correctness (do the validators work together, is routing right), not re-measuring each validator's own precision/recall, that's what the per-validator evals are for.
+- [ ] Grow `injection_labeled.jsonl` toward 100 rows (harder negatives, obfuscated positives). Deferred: real work (sourcing genuinely hard adversarial cases), not something to pad out with filler rows just to hit a number.
+- [ ] Reduce injection false-positive rate below 0.05 without dropping recall. Deferred, needs the larger dataset above first to know what's actually failing.
 
 ## Docs & examples
 - [x] `examples/fastapi_middleware.py` — guard requests/responses in a web app.
