@@ -1,4 +1,4 @@
-"""Minimal bulwark usage — guard an LLM's input and output.
+"""Minimal bulwark usage: guard an LLM's input and output.
 
     python examples/quickstart.py
 """

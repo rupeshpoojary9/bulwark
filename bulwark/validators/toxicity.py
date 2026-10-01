@@ -47,7 +47,11 @@ def _compile(terms: dict[str, tuple[str, Severity]]) -> list[tuple[re.Pattern, s
 
 
 class ToxicityValidator(Validator):
-    """Flags abusive language via a curated lexicon; blocks by default."""
+    """Flags abusive language via a curated lexicon; blocks by default.
+
+    >>> ToxicityValidator().check("You are an idiot.")[0].meta["category"]
+    'insult'
+    """
 
     name = "toxicity"
 

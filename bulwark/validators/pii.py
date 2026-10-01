@@ -27,7 +27,7 @@ _PASSPORT = re.compile(r"(?<![A-Za-z0-9])(?:[A-Z]{1,2}\d{6,7}|\d{9}|[A-Z]\d{8})(
 
 
 def _luhn_ok(digits: str) -> bool:
-    """Luhn checksum — filters random digit runs from real card numbers."""
+    """Luhn checksum, filters random digit runs from real card numbers."""
     total, alt = 0, False
     for ch in reversed(digits):
         d = ord(ch) - 48
@@ -41,8 +41,8 @@ def _luhn_ok(digits: str) -> bool:
 
 
 def _iban_ok(candidate: str) -> bool:
-    """ISO 7064 mod-97-10 checksum — filters random alphanumeric runs from
-    real IBANs. Country-specific length isn't checked; the checksum is."""
+    """ISO 7064 mod-97-10 checksum, filters random alphanumeric runs from
+    real IBANs. Country-specific length isn't checked, the checksum is."""
     s = candidate.replace(" ", "").upper()
     if not (15 <= len(s) <= 34):
         return False
@@ -55,7 +55,11 @@ def _iban_ok(candidate: str) -> bool:
 
 
 class PIIValidator(Validator):
-    """Flags and (by default) redacts common personally-identifiable data."""
+    """Flags and (by default) redacts common personally-identifiable data.
+
+    >>> PIIValidator().check("mail me at a@b.com")[0].meta["kind"]
+    'email'
+    """
 
     name = "pii"
 
