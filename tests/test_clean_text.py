@@ -1,6 +1,6 @@
 """Clean-input contract: benign text must pass every validator untouched.
 
-Each built-in validator should be silent on harmless input — no findings, no
+Each built-in validator should be silent on harmless input: no findings, no
 redaction, ``passed`` True, and the returned text byte-for-byte identical to the
 input. These are the "do no harm" tests that catch over-eager patterns.
 """
@@ -25,7 +25,7 @@ CLEAN_TEXTS = [
 ]
 
 # Validators whose notion of "clean" is arbitrary natural-language text. The
-# JSONSchemaValidator is excluded here because plain prose is *not* valid JSON —
+# JSONSchemaValidator is excluded here because plain prose is *not* valid JSON,
 # it is exercised separately below with well-formed JSON.
 TEXT_VALIDATOR_FACTORIES = [
     PIIValidator,

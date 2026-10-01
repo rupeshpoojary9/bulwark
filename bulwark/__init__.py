@@ -1,4 +1,4 @@
-"""bulwark — a local-first LLM guardrails toolkit.
+"""bulwark, a local-first LLM guardrails toolkit.
 
 Wrap any LLM call with a layered defense (PII redaction, prompt-injection
 detection, secret-leak detection, structured-output validation) and measure
@@ -9,13 +9,15 @@ from .result import Action, Finding, GuardResult, Severity
 from .validators import (
     InjectionValidator,
     JSONSchemaValidator,
+    LengthValidator,
     PIIValidator,
     SecretsValidator,
+    TopicValidator,
     ToxicityValidator,
     Validator,
 )
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 __all__ = [
     "Guard",
@@ -29,4 +31,6 @@ __all__ = [
     "SecretsValidator",
     "JSONSchemaValidator",
     "ToxicityValidator",
+    "LengthValidator",
+    "TopicValidator",
 ]

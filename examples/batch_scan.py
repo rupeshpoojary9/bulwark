@@ -1,7 +1,7 @@
 """Scan a batch of texts and print a per-validator summary.
 
-Useful for auditing a corpus offline — chat logs, a prompt dataset, or a dump
-of model outputs — before (or instead of) guarding traffic live. Every text is
+Useful for auditing a corpus offline (chat logs, a prompt dataset, or a dump
+of model outputs) before, or instead of, guarding traffic live. Every text is
 run through one Guard; the script then reports:
 
   * one line per text: its verdict (ok / redacted / blocked) and which

@@ -126,3 +126,54 @@ def test_isbn_not_flagged_as_phone_or_card():
     r = Guard([PIIValidator()]).check("see ISBN 978-3-16-148410-0 for details")
     assert r.findings == []
     assert not r.redacted and r.passed
+
+
+# --- IBAN (mod-97) and passport patterns ------------------------------------
+
+def test_valid_iban_redacted():
+    # Commonly cited valid example IBAN (UK).
+    r = Guard([PIIValidator()]).check("transfer to GB82 WEST 1234 5698 7654 32 please")
+    assert "[REDACTED_IBAN]" in r.text
+    f = r.by_validator("pii")[0]
+    assert f.meta["kind"] == "iban"
+    assert f.severity.value == "high"
+
+
+def test_valid_iban_german_format_redacted():
+    r = Guard([PIIValidator()]).check("IBAN: DE89 3704 0044 0532 0130 00")
+    assert "[REDACTED_IBAN]" in r.text
+
+
+def test_invalid_iban_checksum_ignored():
+    # Same shape as the valid GB example above, one digit flipped: fails
+    # mod-97, so it must not be flagged as an IBAN.
+    r = Guard([PIIValidator()]).check("ref GB83 WEST 1234 5698 7654 32 only")
+    kinds = [f.meta.get("kind") for f in r.by_validator("pii")]
+    assert "iban" not in kinds
+
+
+def test_passport_indian_uk_format_redacted():
+    # 1 letter + 7 digits, a common Indian/UK passport shape.
+    r = Guard([PIIValidator()]).check("passport A1234567 on file")
+    assert "[REDACTED_PASSPORT]" in r.text
+    f = r.by_validator("pii")[0]
+    assert f.meta["kind"] == "passport"
+    assert f.severity.value == "low"
+
+
+def test_passport_us_format_redacted():
+    # 1 letter + 8 digits, a common US passport shape.
+    r = Guard([PIIValidator()]).check("passport Z12345678 attached")
+    assert "[REDACTED_PASSPORT]" in r.text
+
+
+def test_passport_nine_digit_format_redacted():
+    r = Guard([PIIValidator()]).check("number 123456789 recorded")
+    assert "[REDACTED_PASSPORT]" in r.text
+
+
+def test_short_alphanumeric_code_not_flagged_as_passport():
+    # 4 digits is too short to match any configured passport shape.
+    r = Guard([PIIValidator()]).check("order code AB1234 confirmed")
+    kinds = [f.meta.get("kind") for f in r.by_validator("pii")]
+    assert "passport" not in kinds

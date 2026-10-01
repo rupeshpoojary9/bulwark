@@ -19,7 +19,11 @@ _SECRETS: list[tuple[re.Pattern, str]] = [
 
 
 class SecretsValidator(Validator):
-    """Flags API keys / tokens; blocks by default (credential leakage is high-risk)."""
+    """Flags API keys / tokens; blocks by default (credential leakage is high-risk).
+
+    >>> SecretsValidator().check("key: sk-abcdefghijklmnopqrstuvwx1234")[0].meta["kind"]
+    'openai_api_key'
+    """
 
     name = "secrets"
 

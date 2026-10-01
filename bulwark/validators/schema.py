@@ -19,7 +19,13 @@ except ImportError:  # pragma: no cover
 
 
 class JSONSchemaValidator(Validator):
-    """BLOCK when output is not valid JSON, or does not match ``schema``."""
+    """BLOCK when output is not valid JSON, or does not match ``schema``.
+
+    >>> bool(JSONSchemaValidator().check("not json"))
+    True
+    >>> JSONSchemaValidator().check("{}")
+    []
+    """
 
     name = "json_schema"
 

@@ -23,7 +23,7 @@ input; `echo` appends the trailing newline):
     }
 
 Exit status is 0 when the text passed, 1 when any validator blocked it, and 2
-on a usage error — so the script can gate a pipeline directly.
+on a usage error, so the script can gate a pipeline directly.
 """
 from __future__ import annotations
 
